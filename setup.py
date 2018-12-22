@@ -12,29 +12,31 @@ def read (*paths):
 		return aFile.read()
 
 setup (
-	name = 'Opy',
+	name = 'opy_distbuilder',
 	version = opy.programVersion,
-	description = 'OPY - Obfuscator for Python, string obfuscation added, keyword added',
+	description = 'Python obfuscator for the "Distribution Builder" library.' +
+				  ' An officially endorsed forked from the Opy master.',
 	long_description = (
-		read ('README.rst') + '\n\n' +
-		read ('license_reference.txt')
+		read ('README.md') + '\n\n' +
+		read ('LICENSE')
 	),
-	keywords = ['opy', 'obfuscator', 'obfuscation', 'obfuscate', 'kivy', 'pyo', 'python'],
-	url = 'https://github.com/JdeH/Opy/',
+	long_description_content_type = "text/markdown",
+	keywords = ['opy', 'obfuscator', 'obfuscation', 'obfuscate', 'distbuilder'],
+	url = 'https://github.com/QQuick/Opy/tree/opy_distbuilder',
 	license = 'Apache 2',
-	author = 'Jacques de Hooge',
-	author_email = 'jacques.de.hooge@qquick.org',
+	author = 'Jacques de Hooge, BuvinJ',
+	author_email = 'buvintech@gmail.com',
 	packages = ['opy'],	
 	include_package_data = True,
 	install_requires = ['six'],
 	classifiers = [
-		'Development Status :: 5 - Production/Stable',
-		'Intended Audience :: Developers',
-		'Natural Language :: English',
-		'License :: Other/Proprietary License',
-		'Topic :: Software Development :: Libraries :: Python Modules',
-		'Operating System :: OS Independent',
 		'Programming Language :: Python :: 2.7',
 		'Programming Language :: Python :: 3',
+		'Operating System :: OS Independent',		
+		'License :: Other/Proprietary License',
+		'Intended Audience :: Developers',
+		'Topic :: Software Development :: Libraries :: Python Modules',
+		'Natural Language :: English',
+		'Development Status :: 4 - Beta'		
 	],
 )

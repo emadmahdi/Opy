@@ -4,3 +4,6 @@
 dist
 Opy.egg-info
 
+/.settings
+/.project
+/.pydevproject
