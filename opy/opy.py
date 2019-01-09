@@ -42,7 +42,7 @@ from . import parser
 # =========== Initialize constants
 
 programName = 'opy'
-programVersion = '0.9.0' 
+programVersion = '0.9.0.13' 
 
 if (__name__ == '__main__') or isLibraryInvoked:
     

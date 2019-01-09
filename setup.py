@@ -17,10 +17,9 @@ setup (
 	description = 'Python obfuscator for the "Distribution Builder" library.' +
 				  ' An officially endorsed forked from the Opy master.',
 	long_description = (
-		read ('README.md') + '\n\n' +
+		read ('README.rst') + '\n\n' +
 		read ('LICENSE')
 	),
-	long_description_content_type = "text/markdown",
 	keywords = ['opy', 'obfuscator', 'obfuscation', 'obfuscate', 'distbuilder'],
 	url = 'https://github.com/QQuick/Opy/tree/opy_distbuilder',
 	license = 'Apache 2',
