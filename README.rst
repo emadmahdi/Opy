@@ -168,15 +168,6 @@ Some of these bugs are directly related to one another, but are mentioned separa
 
 - (MAJOR) Weakness: Obfuscation of string literals is unsuitable for sensitive information since it can be trivially broken. Consider adding (your own) *encryption* mechanisms for data requiring serious protection...  	
 
-- Bug: A ' or " inside a string literal should be escaped with \\ rather then doubled.
-
-- Bug: No renaming back door support for methods starting with __ (non-overridable methods, also known as private methods)
-
-- (DUMB) Bug: When "making" is enabled, "import sys" produces an error, as OPY automatically imports sys, an assigns it an alias which creates conflicts when sys.XXXXX is referenced.
-
-Workaround: 
-Explicitly use "from sys import XXXXX" for the isolated imports required. Those imports are given distinct aliases. 
-
 - (MAJOR) Bug: Function calls cannot use keyword arguments.  The argument keys/names become obfuscated by the caller, yet there is no resolution in the function definition.
 
 Workaround:
@@ -243,9 +234,11 @@ Workaround: Use dynamic string substitution and resolve the # via its ascii code
 Example: ::
 
 	HASH = chr(35)
-	errno = 3
-	strerr = "test"
 	print("ERROR %c%d: %s" % ( HASH, errno, strerr ))
+
+- Bug: A ' or " inside a string literal should be escaped with \\ rather then doubled.
+
+- Bug: No renaming back door support for methods starting with __ (non-overridable methods, also known as private methods)
 
 - Weakness: "Skip Public" (beta feature) can produce extra deobfuscation.
 

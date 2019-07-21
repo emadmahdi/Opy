@@ -3,7 +3,7 @@ Library Interface for Opy Utility
 """
 from . import settings
 from . settings import ConfigSettings as OpyConfig
-from . patcher import OpyFile, patch, setLine, replaceInLine
+from . opy_patcher import OpyFile, patch, setLine, replaceInLine
    
 class OpyResults:
     def __init__(self):
@@ -82,6 +82,6 @@ def __runOpy():
     results.obfuscatedFileDict   = opy.obfuscatedFileDict
     results.obfuscatedWordList   = opy.obfuscatedWordList
     results.obfuscatedModImports = opy.skipWordList
-    results.maskedIdentifiers    = opy.parser.obfuscatedModImports 
-    results.skippedPublicSet     = opy.parser.maskedIdentifiers 
+    results.maskedIdentifiers    = opy.opy_parser.obfuscatedModImports 
+    results.skippedPublicSet     = opy.opy_parser.maskedIdentifiers 
     return results

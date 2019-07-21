@@ -1,5 +1,5 @@
 #! /usr/bin/python
-license = (
+license = (  # @ReservedAssignment
 '''_opy_Copyright 2014, 2015, 2016, 2017 Jacques de Hooge, GEATEC engineering, www.geatec.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,10 +37,13 @@ try:
 except:
     isLibraryInvoked=False
 
-try: from . import parser
-except: import parser
+try: 
+    from . import opy_parser                # @UnusedImport
+    from . _version import __version__  # @UnusedImport
+except: 
+    import opy_parser                   # @Reimport
+    from _version import __version__    # @Reimport
 
-from _version import __version__
 programName = 'opy'
 
 if (__name__ == '__main__') or isLibraryInvoked:
@@ -92,9 +95,9 @@ if (__name__ == '__main__') or isLibraryInvoked:
         
     def getUnScrambler (stringBase):
         return '''
-import sys
+from sys import version_info as __opyVerInfo
 
-isPython2{0} = sys.version_info [0] == 2
+isPython2{0} = __opyVerInfo[0] == 2
 charBase{0} = {1}
 charModulus{0} = {2}
 
@@ -364,6 +367,7 @@ Licence:
     # =========== Generate skip list
 
     skipWordSet = set (keyword.kwlist + ['__init__'] + extraPlainWordList)  # __init__ should be in, since __init__.py is special
+    if not isPython2: skipWordSet.update( ['unicode', 'unichr' ] ) # not naturally kept in clear text when obfuscation is produced in Python 3
 
     rawPlainFilePathList = ['{0}/{1}'.format (sourceRootDirectory, plainFileRelPath.replace ('\\', '/')) for plainFileRelPath in plainFileRelPathList]
     
@@ -475,7 +479,7 @@ import {0} as currentModule
             sourceFile.close ()
             
             if skipPublicIdentifiers:
-                skippedPublicSet.update( parser.findPublicIdentifiers( content ) )
+                skippedPublicSet.update( opy_parser.findPublicIdentifiers( content ) )
                 skipWordSet.update( skippedPublicSet )   
             
             replacedComments = []
@@ -520,14 +524,14 @@ import {0} as currentModule
 
             # Replace any imported modules per the old/new (key/value) pairs provided
             if len(replacementModulesDict) > 0 : 
-                normalContent = parser.replaceImports( normalContent, replacementModulesDict )
+                normalContent = opy_parser.replaceImports( normalContent, replacementModulesDict )
                                 
             # Parse content to find imports and optionally provide aliases for those in clear text,
             # so that they will become "masked" upon obfuscation.
             if maskExternalModules : 
-                normalContent = parser.injectAliases( normalContent, externalModuleNameList )
+                normalContent = opy_parser.injectAliases( normalContent, externalModuleNameList )
             else:  
-                parser.analyzeImports( normalContent, externalModuleNameList )
+                opy_parser.analyzeImports( normalContent, externalModuleNameList )
 
             if not preppedOnly :
                 # Obfuscate content without strings
@@ -606,8 +610,8 @@ import {0} as currentModule
                 
     print ('Obfuscated files: {0}'.format ( obfuscatedFileDict ))
     print ('Obfuscated words: {0}'.format (len (obfuscatedWordList)))
-    print ('Obfuscated module imports: {0}'.format (parser.obfuscatedModImports))
-    print ('Masked identifier imports: {0}'.format (parser.maskedIdentifiers))
+    print ('Obfuscated module imports: {0}'.format (opy_parser.obfuscatedModImports))
+    print ('Masked identifier imports: {0}'.format (opy_parser.maskedIdentifiers))
     print ('Skipped public identifiers: {0}'.format (skippedPublicSet))
     
     # Opyfying something twice can and is allowed to fail.
