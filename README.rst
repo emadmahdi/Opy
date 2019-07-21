@@ -4,7 +4,8 @@
 		**The famous Phaistos Disc from Crete, obfuscation unbroken after thousands of years.**
 
 Opy will obfuscate your extensive, real world, multi module Python source code for free!
-And YOU choose per project what to obfuscate and what not, by editing the config file:
+You can use Opy on Python 2 or 3!
+And YOU choose per project what to obfuscate and what not, by defining unique configuration:
 
 - You can recursively exclude all identifiers of certain modules from obfuscation.
 - You can exclude human readable configuration files containing Python code.
@@ -14,7 +15,7 @@ And YOU choose per project what to obfuscate and what not, by editing the config
 
 What's new in the "Distribution Builder FORK":
 
-- implementation of Opy as an import / library provided
+- implementation of Opy as an import / library provided!!
 - replacement_modules *BETA* feature added 
 - mask_external_modules *BETA* feature added
 - skip_public *BETA* feature added
@@ -158,24 +159,101 @@ Example of obfuscated code: ::
 			self.l1l1ll1ll11l = l1111lll1.LabelFrame (self, text = l1llll (u'ࡒࡦࡵࡤࡱࡵࡲࡩ࡯ࡩ࠸'), padx = 5)
 			self.l1l1ll1ll11l.pack (side = l1llll (u'ࡺ࡯ࡱࠢ'), fill = l1llll (u'ࡦࡴࡺࡨࠧ'), expand = True)
 		
-Known limitations / bugs:
+Currently Known Bugs / Issues:
 
-- A comment after a string literal should be preceded by white space.
-- A ' or " inside a string literal should be escaped with \\ rather then doubled.
-- If the pep8_comments option is False (the default), a # in a string literal can only be used at the start, so use 'p''#''r' rather than 'p#r'.
-- If the pep8_comments option is set to True, however, only a <blank><blank>#<blank> cannot be used in the middle or at the end of a string literal
-- Obfuscation of string literals is unsuitable for sensitive information since it can be trivially broken
-- No renaming back door support for methods starting with __ (non-overridable methods, also known as private methods)
+We are hoping to eliminate some of the major and/or "simple" bugs soon... 
 
-- Keyword arguments have been observed to occasionally encounter "name collisions" within certain contexts. (further details are tbd...)
+Sorry about the formating / loose nature of this part of the documentation. These only have been quickly jotted down to provide instant help and to keep a running list of todos for the developers.
+Some of these bugs are directly related to one another, but are mentioned separately to bring explicit attention to each dimension of the issue. 
 
-- "Skip Public" (beta feature) has some weaknesses.
+- (MAJOR) Weakness: Obfuscation of string literals is unsuitable for sensitive information since it can be trivially broken. Consider adding (your own) *encryption* mechanisms for data requiring serious protection...  	
+
+- Bug: A ' or " inside a string literal should be escaped with \\ rather then doubled.
+
+- Bug: No renaming back door support for methods starting with __ (non-overridable methods, also known as private methods)
+
+- (DUMB) Bug: When "making" is enabled, "import sys" produces an error, as OPY automatically imports sys, an assigns it an alias which creates conflicts when sys.XXXXX is referenced.
+
+Workaround: 
+Explicitly use "from sys import XXXXX" for the isolated imports required. Those imports are given distinct aliases. 
+
+- (MAJOR) Bug: Function calls cannot use keyword arguments.  The argument keys/names become obfuscated by the caller, yet there is no resolution in the function definition.
+
+Workaround:
+A) Use positional arguments
+B) Append the argument keywords to the plain_names list. 
+
+- (MAJOR) Bug: String obfuscation of dictionary keys may break using calling functions in external modules and for external resources where such must be defined in clear text. 
+
+Workaround:
+Define the dictionaries and/or key constants in a dedicated module (for import where needed), which is then added to the plain_files list.
+
+- Bug: When string obfuscation is enabled, multi-line string literals which are implicitly continued without the use of an explicit '+' operator between cannot be used. 
+Example, the following string would result in an error. ::
+
+	s = (
+		"This is some text and it needs to \n"
+		"wrap to the next line"
+	)
+
+Known workaround: 
+Explicitly add the '+' character as needed. 
+
+- (UNRESOLVABLE?) Bug: Dynamically created object attributes cannot be referenced directly.
+Example: The popular argparse module creates attributes "magically" e.g. shoen below with "foo". ::
+
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument('--foo', help='foo help')
+	args = parser.parse_args()
+	print( args.foo )
+
+Opy will obfuscate the '--foo' string and the .foo attribute without binding them. 
+
+Workaround: 
+A) Convert args to a dictionary ::
+
+	args = vars(parser.parse_args())
+	
+or ::
+
+	args = parser.parse_args().__dict__
+
+Then, access the value via the the key: ::
+
+	print( args["foo"] )
+	print( args.get("foo") )
+
+B) Access the "magic" attribute via getattr :: 
+
+	print( getattr(args,"foo") )
+
+- Bug: A comment after a string literal should be preceded by white space.
+
+- Bug: If the pep8_comments option is set to True, however, only a <blank><blank>#<blank> cannot be used in the middle or at the end of a string literal
+
+- Bug: If the pep8_comments option is False (the default), a # in a string literal can only be used at the start, so use 'p''#''r' rather than 'p#r'.
+
+- Bug: '#' characters used in the middle of string literals cause the string to be truncated at the index of the # character.
+Example: ::
+ 
+	print("ERROR #%d: %s" % ( errno, strerr ))
+
+Workaround: Use dynamic string substitution and resolve the # via its ascii code.  
+Example: ::
+
+	HASH = chr(35)
+	errno = 3
+	strerr = "test"
+	print("ERROR %c%d: %s" % ( HASH, errno, strerr ))
+
+- Weakness: "Skip Public" (beta feature) can produce extra deobfuscation.
 
 As with other features, this can encounter "name collisions". In this case,
 it can end up leaving some identifiers in clear text that you wanted to be 
 obfuscated.  **Such should NOT cause operational errors at least.**  
 
-- "Masking" (beta feature) fails under a few conditions. 
+- Weakness: "Masking" (beta feature) fails under a few conditions. 
 
 A) It is not yet respectful of scoping details.
 B) It is not yet able to parse imports statements which are not on their own lines (e.g. one-line conditional imports, semicolon delimited multi-statement import lines... ).  
@@ -239,16 +317,3 @@ Obfuscation of "dt" will work without issue.
             
 
 			
-That's it, enjoy!
-
-Jacques de Hooge
-
-jacques.de.hooge@qquick.org
-
-Other packages you might like:
-
-- Lean and mean Python to JavaScript transpiler featuring multiple inheritance https://pypi.python.org/pypi/Transcrypt
-- Python PLC simulator with Arduino code generation https://pypi.python.org/pypi/SimPyLC
-- Event driven evaluation nodes https://pypi.python.org/pypi/Eden
-- A lightweight Python course taking beginners seriously (under construction): https://pypi.python.org/pypi/LightOn
-

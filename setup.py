@@ -1,9 +1,4 @@
 import os
-import sys
-
-sys.path.append ('opy')
-import opy.opy as opy
-
 from setuptools import setup
 import codecs
 
@@ -11,9 +6,11 @@ def read (*paths):
 	with codecs.open (os.path.join (*paths), 'r', encoding = 'utf-8') as aFile:
 		return aFile.read()
 
+exec( open('opy/_version.py').read() ) 
+
 setup (
 	name = 'opy_distbuilder',
-	version = opy.programVersion,
+	version = __version__,  # @UndefinedVariable
 	description = 'Python obfuscator for the "Distribution Builder" library.' +
 				  ' An officially endorsed forked from the Opy master.',
 	long_description = (

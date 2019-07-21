@@ -37,16 +37,15 @@ try:
 except:
     isLibraryInvoked=False
 
-from . import parser
+try: from . import parser
+except: import parser
 
-# =========== Initialize constants
-
+from _version import __version__
 programName = 'opy'
-programVersion = '0.9.0.13' 
 
 if (__name__ == '__main__') or isLibraryInvoked:
     
-    print ('{} (TM) Configurable Multi Module Python Obfuscator Version {}'.format (programName.capitalize (), programVersion))
+    print ('{} (TM) Configurable Multi Module Python Obfuscator Version {}'.format (programName.capitalize (), __version__))
     print ('Copyright (C) Geatec Engineering. License: Apache 2.0 at  http://www.apache.org/licenses/LICENSE-2.0\n')
 
     random.seed ()
