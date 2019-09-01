@@ -180,6 +180,7 @@ Workaround:
 Define the dictionaries and/or key constants in a dedicated module (for import where needed), which is then added to the plain_files list.
 
 - Bug: When string obfuscation is enabled, multi-line string literals which are implicitly continued without the use of an explicit '+' operator between cannot be used. 
+
 Example, the following string would result in an error. ::
 
 	s = (
@@ -191,6 +192,7 @@ Known workaround:
 Explicitly add the '+' character as needed. 
 
 - (UNRESOLVABLE?) Bug: Dynamically created object attributes cannot be referenced directly.
+
 Example: The popular argparse module creates attributes "magically" e.g. shoen below with "foo". ::
 
 	import argparse
@@ -226,6 +228,7 @@ B) Access the "magic" attribute via getattr ::
 - Bug: If the pep8_comments option is False (the default), a # in a string literal can only be used at the start, so use 'p''#''r' rather than 'p#r'.
 
 - Bug: '#' characters used in the middle of string literals cause the string to be truncated at the index of the # character.
+
 Example: ::
  
 	print("ERROR #%d: %s" % ( errno, strerr ))

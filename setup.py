@@ -12,7 +12,7 @@ setup (
 	name = 'opy_distbuilder',
 	version = __version__,  # @UndefinedVariable
 	description = 'Python obfuscator for the "Distribution Builder" library.' +
-				  ' An officially endorsed forked from the Opy master.',
+				  ' An officially endorsed fork from the Opy master.',
 	long_description = (
 		read ('README.rst') + '\n\n' +
 		read ('LICENSE')
