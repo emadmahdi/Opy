@@ -15,6 +15,7 @@ Added extra features and advanced settings:
 - All external modules can be aliased
 - Sensitive identifiers can be forced obfuscated
 - Obfuscation identifiers can be of different sizes randomly
+- Plus other features
 
 
 Please feel free to request new features
