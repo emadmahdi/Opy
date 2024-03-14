@@ -10,7 +10,7 @@ Added extra features and advanced settings:
 
 - It can obfuscate Numbers
 - Obfuscation letters can be specified
-- Files can be excluded from string and/or numbers obfuscation
+- Files can be excluded from string and/or numbers obfuscation or excluded from not obfuscation
 - Extrernal modules and their attributes can be collected automatically
 - All external modules can be aliased
 - Sensitive identifiers can be forced obfuscated
