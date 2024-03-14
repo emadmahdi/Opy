@@ -1,3 +1,17 @@
+
+OPY2    v2024.03.14    (EMAD MAHDI)
+
+Added extra features and advanced settings:
+
+1. It can obfuscate Numbers
+2. Obfuscation letters can be specified
+3, Files can be excluded from string and/or numbers obfuscation
+4. Extrernal modules and their attributes can be collected automatically
+5. All external modules can be aliased
+6. Sensitive identifiers can be forced obfuscated
+
+========================================
+
 	.. figure:: http://www.qquick.org/opy.jpg
 		:alt: Image of Phaistos Disc
 		
