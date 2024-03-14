@@ -8,25 +8,173 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY, without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the QQuickLicence at www.qquick.org/licence.html for details.
+---------------------------------------------
+OPY2     Version:  OPY2.2024.03.14     by: EMAD MAHDI
+To report errors/suggestions/issues/requests use:  http://github.com/emadmahdi/opy2
+---------------------------------------------
 '''
 
 
 
 #====================================================================================================
 # General options
-# All options have default value False
 #====================================================================================================
 
-obfuscate_strings = True        # Don't rely on this for sensitive information
-obfuscated_name_tail = '_opy_'  # Will be added to all obfuscated names to avoid clashes with plain names
-plain_marker = '_opy_'          # Strings or comments containing this marker will not be obfuscated
-pep8_comments = True            # If True, only inline comments of the form <blank><blank>#<blank>
-                                # will be recognized, allowing # to appear in strings as long as
-                                # it doesn't have that particular form
-                                
+
+pep8_comments = False						# OPY (JACQUES DE HOOGE)
+											# If True, only inline comments of the form <blank><blank>#<blank>
+											# will be recognized, allowing # to appear in strings as long as
+											# it doesn't have that particular form
+											# Default is  False
+
+
+obfuscate_strings = True					# OPY (JACQUES DE HOOGE)
+											# Don't rely on this for sensitive information
+											# Default is  True
+
+
+obfuscate_numbers = True					# OPY2 (EMAD MAHDI)
+											# Don't rely on this for sensitive information
+											# Default is  True
+
+
+obfuscate_foldersfiles_names = True   		# OPY2 (EMAD MAHDI)
+											# Choose wither to obfuscate folders and files names (useful for debug)
+											# Default is  True
+
+
+obfuscation_letters = ''					# OPY2 (EMAD MAHDI)
+											# Letters used for all obfuscations .. Duplicates will be ignored
+											# Only letters and numbers are allowed .. At least 1 letter is required
+											# Minimum value is 2 different letters  or  1 letter and 1 number
+											# To match the original OPY use  "l1"  or  "1l"
+											# Default is  ""  which means  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+foldersfiles_names_obfuscate_size = 5		# OPY2 (EMAD MAHDI)
+											# Control the size of all obfuscated filenames
+											# Accepted values are between  2  and  60
+											# Default is  5
+
+
+words_obfuscation_minimum_size = 5			# OPY2 (EMAD MAHDI)
+											# Minimum size for all obfuscations
+											# Accepted values are between  2  and  300
+											# Default is  5
+
+
+words_obfuscation_maximum_size = 10			# OPY2 (EMAD MAHDI)
+											# Maximum size for all obfuscations
+											# Accepted values are between  2  and  300
+											# Default is  10
+
+
+mask_external_modules = True  				# Fixed & Released: OPY2 (EMAD MAHDI)
+											# Beta: OPY-DISTBUILDER (BuvinJ)
+											# The imported identifiers in the external_modules list (not to be obfuscated),
+											# may instead be "masked" by assigning obfuscated ALIASES to them.  This is  
+											# fairly trivial to reverse engineer, but still reduces immediate readability.
+											# Default is  True
+
+
+dry_run = False								# Beta: OPY-DISTBUILDER (BuvinJ)
+											# Setting dry_run to True prevents creating any actual results.  Analytics are still performed and  
+											# can be evaluated / utilized. 
+											# Default is  False
+
+
+prepped_only = False   						# Beta: OPY-DISTBUILDER (BuvinJ)
+											# Similar to dry_run, prepped_only prevents the production of obfuscated results. Instead, the clear
+											# text, "pre-obfuscation stage" of the files will be produced.  This includes module "replacements",
+											# "masks", etc.  This may prove to be highly useful in the process of defining a configuration. 
+											# Default is  False
+
+
+skip_public = False							# OPY-DISTBUILDER (BuvinJ)
+											# Enabling skip_public prevents obfuscating those members of a module which are not explicitly 
+											# denoted - or scoped - as "private" (using a __ double underscore prefix).
+											# This is most useful for obfuscating a library you wish to distribute, while leaving those 
+											# identifiers such as constants, functions, class names, and class attributes in clear text. 
+											# Default is  False
+
+
+obfuscated_name_tail = ''					# OPY (JACQUES DE HOOGE)
+											# Will be added to all obfuscated names to avoid clashes with plain names
+											# Default is  ""
+
+
+plain_marker = ''							# OPY (JACQUES DE HOOGE)
+											# Strings or comments or numbers containing this marker will not be obfuscated
+											# Default is  ""  which means  "_opy_"
 
 
 #====================================================================================================
+# OPY2 (EMAD MAHDI)
+# Files listed here will be treated as an exception to the obfuscation action defined by the settings "obfuscate_strings"
+# Format is:  Relative path + name of Python source files
+# This is needed to improve the performance of executing python files
+#====================================================================================================
+
+strings_exception_files = '''
+'''
+
+
+
+#====================================================================================================
+# OPY2 (EMAD MAHDI)
+# Files listed here will be treated as an exception to the obfuscation action defined by the settings "obfuscate_numbers"
+# Add here the list of files that their numbers should be excluded from obfuscation
+# Format is:  Relative path + name of Python source files
+# This is needed to improve the performance of executing python files
+#====================================================================================================
+
+numbers_exception_files = '''
+'''
+
+
+
+#====================================================================================================
+# OPY2 (EMAD MAHDI)
+# Format is:  Relative path + name of Python source files
+# In other words, such files will neither be obfuscated nor copied
+# N.B. Use forward slashes rather than backslashes, also on Windows!
+#====================================================================================================
+
+skip_files = '''
+opy.py
+opy_parser.py
+'''
+
+
+
+#====================================================================================================
+# OPY2 (EMAD MAHDI)
+# Force obfuscation of this words list .. Any word ends with "__" will be ignored
+# It is useful for skipping module components that uses common words and not reserved words such as:  self, kwargs .. etc
+# Those words can break the execution of obfuscated files .. Do not use this section unless you know exactly what are doing
+#====================================================================================================
+
+force_obfuscate_words = '''
+'''
+
+
+
+#====================================================================================================
+# OPY2 (EMAD MAHDI)
+# Typically not needed at all
+# Components and attributes will be collected automatically but can also be added using the below syntax format
+# Format is:  module_name:list_of_components_and_subcomponents_separated_by_comma
+# Only "module_name" is mandatory the colon and components can be added or ignored .. Do not use spaces
+# ex:  kitchen:knifes,spoons,forks,plates,big,small,metal,plastic
+#====================================================================================================
+
+any_external_modules = '''
+'''
+
+
+
+#====================================================================================================
+# OPY (JACQUES DE HOOGE)
 # Extensions of files that should be obfuscated
 # Typically these are files containing Python source code
 # Other files are just copied to the target directory
@@ -40,28 +188,22 @@ pyx
 
 
 #====================================================================================================
+# OPY (JACQUES DE HOOGE)
 # Extensions of files that should neither be obfuscated nor copied to the target directory
 # Typically these are .pyc files, which could easily be decompiled, breaking obfuscation
 #====================================================================================================
 
 skip_extensions = '''
+bak
 pyc
+pyo
+txt
 '''
 
 
 
 #====================================================================================================
-# Enabling skip_public prevents obfuscating those members of a module which are not explicitly 
-# denoted - or scoped - as "private" (using a __ double underscore prefix).
-# This is most useful for obfuscating a library you wish to distribute, while leaving those 
-# identifiers such as constants, functions, class names, and class attributes in clear text. 
-#====================================================================================================
-
-skip_public = False
-
-
-
-#====================================================================================================
+# OPY (JACQUES DE HOOGE)
 # Fragments that, when occurring in the path of a file, will cause this file to be ignored
 # In other words, such files will neither be obfuscated nor copied
 # Use this to exclude complete directories from any processing by Opy
@@ -69,39 +211,14 @@ skip_public = False
 #====================================================================================================
 
 skip_path_fragments = '''
-test_dummy
+__pycache__
+BACKUP
 '''
 
 
 
 #====================================================================================================
-# Modules in sys.path containing identifiers that should not be obfuscated
-# Typically these are installed standard or 3rd party modules of which you have no source code
-# Use dotted names if needed, e.g. include both matplotlib and matplotlib.pyplot
-#====================================================================================================
-
-external_modules = '''
-re
-os
-sys
-io
-errno
-keyword
-importlib
-random
-codecs
-shutil
-traceback
-collections
-json
-datetime 
-'''
-
-
-
-#====================================================================================================
-# *** BETA FEATURE ***
-#
+# BETA From OPY-DISTBUILDER (BuvinJ)
 # Rather than leave external modules references in clear text, you may instead
 # opt to bundle the source of those into your obfuscated version of the code, thereby
 # allowing you to hide those details as well.  Based on upon your method for bundling,
@@ -117,18 +234,7 @@ dummyModule:bundledLibs.dummyReplacement.__init__
 
 
 #====================================================================================================
-# *** BETA FEATURE ***
-#
-# The imported identifiers in the external_modules list (not to be obfuscated),
-# may instead be "masked" by assigning obfuscated ALIASES to them.  This is  
-# fairly trivial to reverse engineer, but still reduces immediate readability.
-#====================================================================================================
-
-mask_external_modules = True
-
-
-
-#====================================================================================================
+# OPY (JACQUES DE HOOGE)
 # Relative path + name of Python source files containing identifiers that should not be obfuscated
 # Typically these are human readable settings files loaded and exec'ed at runtime by your program
 # Do not use this facility for files that are imported, that's what external_modules is for
@@ -142,19 +248,19 @@ opy_config.txt
 
 
 #====================================================================================================
+# OPY (JACQUES DE HOOGE)
 # Extra identifiers and module names (as opposed to contents) that should not be obfuscated
 # Probably at least the names of your main modules (so not their filenames) go here
 # If e.g. your main module is in my_main_module.py, include my_main_module in plain_names
 #====================================================================================================
 
 plain_names = '''
-opy
-poly_walker_test
 '''
 
 
 
 #====================================================================================================
+# OPY-DISTBUILDER (BuvinJ)
 # Specify a subset of files to process, rather than the entire source directory.  May be useful during
 # the process of tweaking the source or the configuration.  It also allows for running the process
 # in separate steps, with alternate configurations per sets of files. 
@@ -163,22 +269,4 @@ poly_walker_test
 subset_files = '''
 '''
 
-
-
-#====================================================================================================
-# Setting dry_run to True prevents creating any actual results.  Analytics are still performed and  
-# can be evaluated / utilized. 
-#====================================================================================================
-
-dry_run = False
-
-
-
-#====================================================================================================
-# Similar to dry_run, prepped_only prevents the production of obfuscated results. Instead, the clear
-# text, "pre-obfuscation stage" of the files will be produced.  This includes module "replacements",
-# "masks", etc.  This may prove to be highly useful in the process of defining a configuration. 
-#====================================================================================================
-
-prepped_only = False
 
