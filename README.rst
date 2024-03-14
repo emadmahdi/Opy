@@ -11,6 +11,9 @@ Added extra features and advanced settings:
 - Sensitive identifiers can be forced obfuscated
 - Obfuscation identifiers can be of different sizes randomly
 
+Please feel free to request new features
+
+
 ========================================
 
 	.. figure:: http://www.qquick.org/opy.jpg
