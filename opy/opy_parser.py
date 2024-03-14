@@ -327,3 +327,4 @@ def __findAstPublicNameAssigns( node ):
 def __isPrivatePrefix( identifier ):
 	return ( identifier.startswith( PRIVATE_PREFIX )
 			 and not identifier.endswith( MAGIC_SUFFIX ) )
+
