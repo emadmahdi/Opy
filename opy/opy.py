@@ -16,7 +16,6 @@ limitations under the License.
 ==============================================
 OPY2
 Version:  OPY2.2024.03.14
-Modified, Enhanced, Fixed and Extended by:
 EMAD MAHDI
 
 Please feel free to report any errors or suggest new features:
