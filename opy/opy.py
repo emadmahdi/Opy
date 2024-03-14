@@ -920,4 +920,3 @@ import {0} as currentModule
 	# Opyfying something twice can and is allowed to fail.
 	# The obfuscation for e.g. variable 1 in round 1 can be the same as the obfuscation for e.g. variable 2 in round 2.
 	# If in round 2 variable 2 is replaced first, the obfuscation from round 1 for variable 1 will be replaced by the same thing.
-	
