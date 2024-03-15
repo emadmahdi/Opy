@@ -647,6 +647,8 @@ import {0} as currentModule
 			allExternalModules += modules
 	allExternalModules = list(set(allExternalModules).difference(sourceFilePreNameLIST))
 	skipWordSet.update(allAttribs+allArguments+allExternalModules)
+	skipWordSet = skipWordSet.difference(sourceFilePreNameLIST)
+	if '__init__' in sourceFilePreNameLIST: skipWordSet.update(['__init__'])
 	externalModuleNameList += allExternalModules
 	print('{0: >24}  :  {1}'.format('Files found',len(sourceFilePreNameLIST)))
 	print('{0: >24}  :  {1}'.format('External modules found',len(allExternalModules)))
@@ -890,33 +892,25 @@ import {0} as currentModule
 	if 0:
 		print
 		print ('Obfuscated files:  {0}'.format ( (obfuscatedFileDict)))
+		print;print;print;print ('Skipped words:  {0}'.format ( (skipWordSet)))
+		print;print;print;print ('Obfuscated words:  {0}'.format ( (allObfuscatedWords)))
+		print;print;print;print ('Obfuscated module imports:  {0}'.format ( (opy_parser.obfuscatedModImports)))
+		print;print;print;print ('Masked identifier imports:  {0}'.format ( (opy_parser.maskedIdentifiers)))
+		print;print;print;print ('Skipped public identifiers:  {0}'.format ( (skippedPublicSet)))
+		print;print;print;print ('Time Elapsed:  {0} sec'.format ( int(timeElapsed) ))
 		print
-		print
-		print ('Obfuscated words:  {0}'.format ( (obfuscatedWordList)))
-		print
-		print
-		print ('Obfuscated module imports:  {0}'.format ( (opy_parser.obfuscatedModImports)))
-		print
-		print
-		print ('Masked identifier imports:  {0}'.format ( (opy_parser.maskedIdentifiers)))
-		print
-		print
-		print ('Skipped public identifiers:  {0}'.format ( (skippedPublicSet)))
-		print
-		print
-		print ('Time Elapsed:  {0} sec'.format ( int (timeFinish-timeStart) ))
 	else:
 		print
 		print('{0: >28}  :  {1}'.format('Obfuscated files',len(obfuscatedFileDict)))
-		print('{0: >28}  :  {1}'.format('Obfuscated words',len(obfuscatedWordList)))
+		print('{0: >28}  :  {1}'.format('Skipped words',len(skipWordSet)))
+		print('{0: >28}  :  {1}'.format('Obfuscated words',len(allObfuscatedWords)))
 		print('{0: >28}  :  {1}'.format('Obfuscated module imports',len(opy_parser.obfuscatedModImports)))
 		print('{0: >28}  :  {1}'.format('Masked identifier imports',len(opy_parser.maskedIdentifiers)))
 		print('{0: >28}  :  {1}'.format('Skipped public identifiers',len(skippedPublicSet)))
 		print('{0: >28}  :  {1} sec'.format('Time Elapsed',int(timeElapsed)))
 	print
 
-
-
 	# Opyfying something twice can and is allowed to fail.
 	# The obfuscation for e.g. variable 1 in round 1 can be the same as the obfuscation for e.g. variable 2 in round 2.
 	# If in round 2 variable 2 is replaced first, the obfuscation from round 1 for variable 1 will be replaced by the same thing.
+	
