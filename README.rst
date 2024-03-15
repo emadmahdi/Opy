@@ -10,8 +10,8 @@ Added new features and advanced settings such as:
 
 - Numbers Obfuscation
 - Specifying obfuscation letters
-- Excluding Files from strings and/or numbers obfuscation or from not obfuscation
-- Collecting automatically extrernal modules and their attributes and their arguments
+- Excluding files from strings and/or numbers obfuscation or from not obfuscation
+- Collecting automatically extrernal modules and their attributes and arguments
 - Aliasing of all external modules automatically
 - Forcing obfuscation of sensitive identifiers
 - Changing randomly the size of obfuscated identifiers using a minimum and a maximum values
