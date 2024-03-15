@@ -3,18 +3,19 @@ OPY2
 
 v 2024.03.14
 
-(EMAD MAHDI)
+( EMAD MAHDI )
 
 
-Added extra features and advanced settings:
+Added new features and advanced settings such as:
 
-- It can obfuscate Numbers
-- Obfuscation letters can be specified
-- Files can be excluded from string and/or numbers obfuscation or excluded from not obfuscation
-- Extrernal modules and their attributes can be collected automatically
-- All external modules can be aliased
-- Sensitive identifiers can be forced obfuscated
-- Obfuscation identifiers can be of different sizes randomly
+- Numbers Obfuscation
+- Specifying obfuscation letters
+- Excluding Files from strings and/or numbers obfuscation or from not obfuscation
+- Collecting automatically extrernal modules and their attributes and their arguments
+- Aliasing of all external modules automatically
+- Forcing obfuscation of sensitive identifiers
+- Changing randomly the size of obfuscated identifiers using a minimum and a maximum values
+- Disabling and enabling files/folders names obfuscation
 - Plus other new features
 
 
