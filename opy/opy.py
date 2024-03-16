@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================
 OPY2
-Version:  OPY2.2024.03.14
+Version:  OPY2.2024.03.16
 EMAD MAHDI
 
 Please feel free to report any errors or suggest new features:
@@ -59,7 +59,7 @@ except:
 	#from _version import __version__    # @Reimport
 
 programName = 'opy'
-__version__ = "OPY2.2024.03.14"
+__version__ = "OPY2.2024.03.16"
 
 if (__name__ == '__main__') or isLibraryInvoked:
 	print('\n---------------------------------------------')
