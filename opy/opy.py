@@ -285,11 +285,13 @@ Licence:
 	# OPY2
 	skipFilesList = getConfig ('skip_files', '') .split ()
 	obfuscateNumbers = getConfig ('obfuscate_numbers', True)
+	obfuscateBooleans = getConfig ('obfuscate_booleans', True)
 	obfuscationLetters = getConfig ('obfuscation_letters', '')
 	stringsExceptionsFileRelPathList = getConfig ('strings_exception_files', '') .split ()
 	numbersExceptionsFileRelPathList = getConfig ('numbers_exception_files', '') .split ()
+	booleansExceptionsFileRelPathList = getConfig ('booleans_exception_files', '') .split ()
 	anyExternalModulesList = getConfig ('any_external_modules.split ()', [])
-	obfuscateSize_FoldersFiiles = getConfig ('foldersfiles_names_obfuscate_size', 5)
+	obfuscateSize_FoldersFiiles = getConfig ('filesfolders_names_obfuscate_size', 5)
 	obfuscationMinimumSize_Words = getConfig ('words_obfuscation_minimum_size', 5)
 	obfuscationMaximumSize_Words = getConfig ('words_obfuscation_maximum_size', 10)
 	obfuscateNames_FoldersFiles = getConfig ('obfuscate_foldersfiles_names', True)
@@ -324,7 +326,7 @@ Licence:
 	
 	# OPY2
 	# Needed by the unscrambler
-	if (obfuscateNumbers or obfuscateStrings) and 'version_info' not in extraPlainWordList:
+	if (obfuscateNumbers or obfuscateStrings or obfuscateBooleans) and 'version_info' not in extraPlainWordList:
 		extraPlainWordList.append('version_info')
 		
 	#TODO: Handle spaces between key/colon/value, e.g. 'key : value'     
@@ -554,83 +556,46 @@ import {0} as currentModule
 	obfuscatedRegExList = []
 	skippedPublicSet=set()
 
-	"""
 	# OPY2
 	# Find components of any modules listed in "any_external_modules" in "opy_config.txt"
-	# fails for some attributes
-	def collect_attributes_from_source_files_re_findall(content):
-		attribs1,attribs2,attribs3,attribs4,attribs5,attribs6 = [],[],[],[],[],[]
-		parenthesisRegex = r"(?P<expression>\(([^()]*(?P<parenthesis>\()(?(parenthesis)[^()]*\)))*?[^()]*\))"
-		# find "mod.xyz"
-		for module in anyModules:
-			attribs1 += re.findall(module+'[\t\s]*\.[\t\s]*(.+?)[  \s  \t  \(  \)  \[  \+  \-  \=  \:  \.  ]+',content)
-		#print;print(1,attribs1)
-		# find "from mod import xyz,xyz"
-		for module in anyModules:
-			strings = re.findall('from[\t\s]+'+module+'[\t\s]+import[\t\s]+(.+?)[\t\s]*[$\r\n]',content+'\n')
-			for string in strings:
-				for anImport in string.split(','):
-					attrib = re.findall('[\t\s]*(.*?)[\t\s]+as',anImport)
-					if not attrib: attrib = [anImport]
-					attribs2 += attrib
-		#print;print(2,attribs2)
-		# find subcomponents strings
-		for attrib in set(attribs1+attribs2):
-			attrib = attrib.strip(')')
-			try: attribs = re.findall(attrib+'[\t\s]*'+parenthesisRegex+'*[\t\s]*\.(.*?)[\t\s\n\r]',content)
-			except:
-				attribs = []
-				print(attrib)
-			for attrib in attribs:
-				attribs3 += list(attrib)
-		attribs3 += attribs1+attribs2
-		#print;print(3,attribs3)
-		# split strings to subcomponents
-		for attribs in set(attribs3):
-			attribs4 += list(attribs.split('.'))
-		#print;print(4,attribs4)
-		# clean subcomponents
-		for attrib in set(attribs4):
-			attribs = re.findall('\w+',attrib)
-			if attribs: attribs5.append(attribs[0])
-		#print;print(5,attribs5)
-		for attrib in set(attribs5):
-			attribs6 += re.findall(attrib+'[\t\s]*.*?[\(\,]+[\t\s]*(\w+)[\t\s]*\=',content)
-		attribs6 += attribs5
-		#print;print(6,attribs6)
-		return set(attribs6)
-	"""
-
-	# OPY2
-	# Find components of any modules listed in "any_external_modules" in "opy_config.txt"
-	def analyze_source_file_using_ast(sourceFilePath):
-		sourceFile = codecs.open (sourceFilePath, encoding = 'utf-8')
-		content = sourceFile.read () 
-		sourceFile.close ()
-		try: content = content.encode('utf8','ignore')
-		except: pass
-		content = ast.parse(content)
-		content = ast.dump(content)
-		attribs1 = re.findall("attr='(.*?)'",content)
-		attribs2 = re.findall("alias\(name='(.*?)'",content)
-		attribs3 = []
-		for attrib in attribs2: attribs3 += attrib.split('.')
-		arguments = re.findall("arg='(.*?)'",content)
-		modules = re.findall("ImportFrom\(module='(.*?)'",content)
-		imports = re.findall('Import\(names=\[(.*?)\]',content)
-		for imp in imports: modules += re.findall("name='(.*?)'",imp)
-		identifiers = re.findall("Name\(id='(.*?)'",content)
-		return set(attribs1+attribs2+attribs3),set(arguments),set(modules),set(identifiers)
+	def analyze_all_source_files_using_ast(sourceFilePathListFiltered):
+		allAttribs,allArguments,allIdentifiers,allExternalModules,allFunctions = [],[],[],[],[]
+		for sourceFilePath in sourceFilePathListFiltered:
+			sourceFile = codecs.open (sourceFilePath, encoding = 'utf-8')
+			contents = sourceFile.read () 
+			sourceFile.close ()
+			try: contents = contents.encode('utf8','ignore')
+			except: pass
+			contents = ast.parse(contents)
+			#open('s:\\'+sourceFilePath.rsplit('/',1)[1]+'.txt','w').write(ast.dump(contents))
+			block = ast.dump(contents)
+			froms = re.findall("ImportFrom\(module='(.*?)', names=\[(.*?)\]",block)
+			if froms:
+				for module,attribs in froms:
+					if module.split('.')[0] in sourceFilePreNameLIST: continue
+					allExternalModules += [module]+module.split('.')
+					allAttribs += re.findall("alias\(name='(.*?)'",attribs)
+			imports = re.findall("Import\(names=\[(.*?)\]",block)
+			if imports:
+				for imp in imports:
+					modules = re.findall("name='(.*?)'",imp)
+					for module in modules:
+						if module.split('.')[0] in sourceFilePreNameLIST: continue
+						allExternalModules += [module]+module.split('.')
+			allAttribs += re.findall("attr='(.*?)'",block)
+			allFunctions += re.findall("FunctionDef\(name='(.*?)'",block)
+			allArguments += re.findall("arg='(.*?)'",block)
+			allIdentifiers += re.findall("Name\(id='(.*?)'",block)
+		allAttribs = list(set(allAttribs).difference(allFunctions))
+		return allAttribs,allArguments,allIdentifiers,allExternalModules
 
 	# OPY2
 	lastprint = 0
 	sourceFilePathListFiltered = []
 	sourceFilePreNameLIST = []
-	allAttribs,allArguments,allIdentifiers,allExternalModules = [],[],[],[]
 
 	# OPY2
-	# Collect external modules names, modules attributes identifiers, and functions arguments identifiers
-	print('1. Analyzing all python source files')
+	print('1. Filtering python source files')
 	print
 	for sourceFilePath in sourceFilePathList:
 		if sourceFilePath == configFilePath: continue
@@ -638,13 +603,14 @@ import {0} as currentModule
 		if sourceFileName in skipFilesList: continue
 		sourceFilePreName, sourceFileNameExtension = (sourceFileName.rsplit ('.', 1) + ['']) [ : 2]
 		if sourceFileNameExtension in sourceFileNameExtensionList and not sourceFilePath in plainFilePathList:
-			attribs,arguments,modules,identifiers = analyze_source_file_using_ast(sourceFilePath)
 			sourceFilePathListFiltered.append(sourceFilePath)
 			sourceFilePreNameLIST.append(sourceFilePreName)
-			allAttribs += attribs
-			allArguments += arguments
-			allIdentifiers += identifiers
-			allExternalModules += modules
+
+	# OPY2
+	# Collect external modules names, modules attributes identifiers, and functions arguments identifiers
+	print('2. Analyzing python source files')
+	print
+	allAttribs,allArguments,allIdentifiers,allExternalModules = analyze_all_source_files_using_ast(sourceFilePathListFiltered)
 	allExternalModules = list(set(allExternalModules).difference(sourceFilePreNameLIST))
 	skipWordSet.update(allAttribs+allArguments+allExternalModules)
 	skipWordSet = skipWordSet.difference(sourceFilePreNameLIST)
@@ -670,8 +636,8 @@ import {0} as currentModule
 	available = (obfuscationLettersCount**obfuscateSize_FoldersFiiles)//2
 	if available<len(sourceFilePreNameLIST):
 		print('Wrong settings in "opy_config.txt" file')
-		print('Available obfuscation words is not enough:  '+str(available))
-		print('You need to increase  "Obfuscation Letters"  and/or  "Obfuscation folders & files names size"')
+		print('Available files/folders names is not enough:  '+str(available))
+		print('You need to increase  "Obfuscation Letters"  and/or  "Obfuscation files/folders names size"')
 		print
 		sys.exit()
 
@@ -681,7 +647,7 @@ import {0} as currentModule
 
 	# OPY2
 	# Read contents of section "any_external_modules" in "opy_config.txt" file
-	print('2. Collecting settings from settings file "opy_config.txt"')
+	print('3. Collecting settings from settings file "opy_config.txt"')
 	print
 	anyModules,anyAttribs = [],[]
 	for line in anyExternalModulesList:
@@ -700,7 +666,7 @@ import {0} as currentModule
 	# OPY2
 	# Force obfuscation of words listed in section "force_obfuscate_words" in "opy_config.txt" file
 	skipWordSet = set(skipWordSet).difference(forceObfuscateWordsList)
-	print('3. Processing all python source files')
+	print('4. Processing python source files')
 	print
 
 	for sourceFilePath in sourceFilePathListFiltered:
@@ -724,11 +690,13 @@ import {0} as currentModule
 				skipWordSet.update( skippedPublicSet )   
 
 			# OPY2
-			# Decide if strings and/or numbers should be obfuscated in this file
+			# Decide if strings and/or numbers and/or booleans should be obfuscated in this file
 			global obfuscateStringsOfThisFile
 			obfuscateStringsOfThisFile = obfuscateStrings and sourceFileName not in stringsExceptionsFileRelPathList
 			obfuscateNumbersOfThisFile = obfuscateNumbers and sourceFileName not in numbersExceptionsFileRelPathList
-			addScrambler = obfuscateStringsOfThisFile or obfuscateNumbersOfThisFile
+			obfuscateBooleansOfThisFile = obfuscateBooleans and sourceFileName not in booleansExceptionsFileRelPathList
+
+			addScrambler = obfuscateStringsOfThisFile or obfuscateNumbersOfThisFile or obfuscateBooleansOfThisFile
 
 			replacedComments = []
 			contentList = content.split ('\n', 2)
@@ -801,6 +769,27 @@ import {0} as currentModule
 					lines.append(line)
 				normalContent = '\n'.join(lines)
 			normalContent = re.sub(r'\b(\d+\.*\d*)'+plainMarker+r'\b',r'\1',normalContent)
+
+			# OPY2
+			# Obfuscate booleans True/False
+			if obfuscateBooleansOfThisFile:
+				skipWordSet.update('u')
+				booleansPlaceholder = '_{0}_b_'.format(programName)
+				normalContent = re.sub(r'\b(True|False)\b',r'{0}(\1)'.format(booleansPlaceholder),normalContent)
+				lines = []
+				for line in normalContent.splitlines():
+					comment = re.findall('^[\t\s]*(\#.*?)$',line)
+					plainBooleans = re.findall(booleansPlaceholder+'\((True|False)\)'+plainMarker,line)
+					lineBooleans = re.findall(booleansPlaceholder+'\((True|False)\)',line)
+					for boolean in lineBooleans:
+						marker = ''
+						if 0 and boolean in plainBooleans: replacement,marker = boolean,plainMarker
+						elif comment: replacement = getObfuscatedName(str(boolean))
+						else: replacement = u'unScramble{0}({1})'.format(random.randrange(33),scramble(boolean))
+						line = line.replace(booleansPlaceholder+'('+boolean+')'+marker,replacement)
+					lines.append(line)
+				normalContent = '\n'.join(lines)
+			normalContent = re.sub(r'\b(True|False)'+plainMarker+r'\b',r'\1',normalContent)
 
 			if not preppedOnly :
 				# Obfuscate content without strings
