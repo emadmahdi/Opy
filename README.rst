@@ -1,7 +1,7 @@
 
 OPY2
 
-v 2024.03.14
+v 2024.03.16
 
 ( EMAD MAHDI )
 
@@ -9,8 +9,9 @@ v 2024.03.14
 Added new features and advanced settings such as:
 
 - Numbers Obfuscation
+- Booleans obfuscation True/False
 - Specifying obfuscation letters
-- Excluding some files from strings and/or numbers obfuscation or from not obfuscation
+- Excluding some files from strings and/or numbers and/or booleans obfuscation or from not obfuscation
 - Collecting automatically extrernal modules and their attributes and arguments
 - Aliasing of all external modules automatically
 - Forcing obfuscation of sensitive identifiers
