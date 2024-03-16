@@ -9,7 +9,7 @@ but WITHOUT ANY WARRANTY, without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the QQuickLicence at www.qquick.org/licence.html for details.
 ---------------------------------------------
-OPY2     Version:  OPY2.2024.03.14     by: EMAD MAHDI
+OPY2     Version:  OPY2.2024.03.15     by: EMAD MAHDI
 To report errors/suggestions/issues/requests use:  http://github.com/emadmahdi/opy2
 ---------------------------------------------
 '''
@@ -28,13 +28,19 @@ pep8_comments = False						# OPY (JACQUES DE HOOGE)
 											# Default is  False
 
 
-obfuscate_strings = True					# OPY (JACQUES DE HOOGE)
+obfuscate_strings = False					# OPY (JACQUES DE HOOGE)
 											# Don't rely on this for sensitive information
 											# Default is  True
 
 
-obfuscate_numbers = True					# OPY2 (EMAD MAHDI)
+obfuscate_numbers = False					# OPY2 (EMAD MAHDI)
 											# Don't rely on this for sensitive information
+											# Default is  True
+
+
+obfuscate_booleans = False					# OPY2 (EMAD MAHDI)
+											# Don't rely on this for sensitive information
+											# Obfuscate True/False
 											# Default is  True
 
 
@@ -51,7 +57,7 @@ obfuscation_letters = ''					# OPY2 (EMAD MAHDI)
 											# Default is  ""  which means  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
-foldersfiles_names_obfuscate_size = 5		# OPY2 (EMAD MAHDI)
+filesfolders_names_obfuscate_size = 10		# OPY2 (EMAD MAHDI)
 											# Control the size of all obfuscated filenames
 											# Accepted values are between  2  and  60
 											# Default is  5
@@ -63,10 +69,10 @@ words_obfuscation_minimum_size = 5			# OPY2 (EMAD MAHDI)
 											# Default is  5
 
 
-words_obfuscation_maximum_size = 10			# OPY2 (EMAD MAHDI)
+words_obfuscation_maximum_size = 20			# OPY2 (EMAD MAHDI)
 											# Maximum size for all obfuscations
 											# Accepted values are between  2  and  300
-											# Default is  10
+											# Default is  20
 
 
 mask_external_modules = True  				# Fixed & Released: OPY2 (EMAD MAHDI)
@@ -135,6 +141,19 @@ numbers_exception_files = '''
 
 #====================================================================================================
 # OPY2 (EMAD MAHDI)
+# Files listed here will be treated as an exception to the obfuscation action defined by the settings "obfuscate_booleans"
+# Add here the list of files that their booleans True/False should be excluded from obfuscation
+# Format is:  Relative path + name of Python source files
+# This is needed to improve the performance of executing python files
+#====================================================================================================
+
+booleans_exception_files = '''
+'''
+
+
+
+#====================================================================================================
+# OPY2 (EMAD MAHDI)
 # Format is:  Relative path + name of Python source files
 # In other words, such files will neither be obfuscated nor copied
 # N.B. Use forward slashes rather than backslashes, also on Windows!
@@ -142,6 +161,7 @@ numbers_exception_files = '''
 
 skip_files = '''
 opy.py
+opy_config.txt
 opy_parser.py
 '''
 
@@ -155,6 +175,14 @@ opy_parser.py
 #====================================================================================================
 
 force_obfuscate_words = '''
+self
+kwargs
+zblocked
+zdonated
+ztesting
+playstatus
+zscript_name
+wait_videoplay
 '''
 
 
@@ -242,7 +270,6 @@ dummyModule:bundledLibs.dummyReplacement.__init__
 #====================================================================================================
 
 plain_files = '''
-opy_config.txt
 '''
 
 
@@ -255,6 +282,7 @@ opy_config.txt
 #====================================================================================================
 
 plain_names = '''
+onClick
 '''
 
 
@@ -268,4 +296,5 @@ plain_names = '''
 
 subset_files = '''
 '''
+
 
