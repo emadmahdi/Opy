@@ -28,17 +28,17 @@ pep8_comments = False						# OPY (JACQUES DE HOOGE)
 											# Default is  False
 
 
-obfuscate_strings = False					# OPY (JACQUES DE HOOGE)
+obfuscate_strings = True					# OPY (JACQUES DE HOOGE)
 											# Don't rely on this for sensitive information
 											# Default is  True
 
 
-obfuscate_numbers = False					# OPY2 (EMAD MAHDI)
+obfuscate_numbers = True					# OPY2 (EMAD MAHDI)
 											# Don't rely on this for sensitive information
 											# Default is  True
 
 
-obfuscate_booleans = False					# OPY2 (EMAD MAHDI)
+obfuscate_booleans = True					# OPY2 (EMAD MAHDI)
 											# Don't rely on this for sensitive information
 											# Obfuscate True/False
 											# Default is  True
@@ -177,12 +177,6 @@ opy_parser.py
 force_obfuscate_words = '''
 self
 kwargs
-zblocked
-zdonated
-ztesting
-playstatus
-zscript_name
-wait_videoplay
 '''
 
 
@@ -282,7 +276,6 @@ plain_files = '''
 #====================================================================================================
 
 plain_names = '''
-onClick
 '''
 
 
