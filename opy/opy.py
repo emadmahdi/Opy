@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================
 OPY2
-Version:  OPY2.2024.03.16
+Version:  OPY2.2024.03.19
 EMAD MAHDI
 
 Please feel free to report any errors or suggest new features:
@@ -24,7 +24,6 @@ Please feel free to report any errors or suggest new features:
 ''')
 
 # OPY2
-allClearWords = {}
 allObfuscatedWords = {}
 import time,ast
 timeStart = time.time()
@@ -59,7 +58,7 @@ except:
 	#from _version import __version__    # @Reimport
 
 programName = 'opy'
-__version__ = "OPY2.2024.03.16"
+__version__ = "OPY2.2024.03.19"
 
 if (__name__ == '__main__') or isLibraryInvoked:
 	print('\n---------------------------------------------')
@@ -112,6 +111,11 @@ To report errors/suggestions/issues/requests use:  http://github.com/emadmahdi/o
 		
 	def scramble (stringLiteral):
 		global stringNr
+
+		# OPY2
+		# To allow scrambling of more strings/numbers/booleans
+		# And allow bigger projects to be scrambled properly
+		if stringNr==8192: stringNr = charBase
 		
 		if isPython2:
 			recodedStringLiteral = unicode () .join ([unichr (charBase + ord (char) + (charIndex + stringNr) % charModulus) for charIndex, char in enumerate (stringLiteral)])
@@ -129,14 +133,13 @@ To report errors/suggestions/issues/requests use:  http://github.com/emadmahdi/o
 		
 	def getUnScrambler (stringBase):
 		return '''
-from sys import version_info as __opyVerInfo
+import sys
+isPython2{0} = sys.version_info [0{0}] == 2{0}
+charBase{0} = {1}{0}
+charModulus{0} = {2}{0}
 
-isPython2 = __opyVerInfo[0{0}] == 2{0}
-charBase = {1}{0}
-charModulus = {2}{0}
-
-def unScramble (keyedStringLiteral):
-	global stringNr
+def unScramble{0} (keyedStringLiteral):
+	global stringNr{0}
 	
 	stringNr = ord (keyedStringLiteral [-1{0}])
 	rotatedStringLiteral = keyedStringLiteral [:-1{0}]
@@ -144,27 +147,26 @@ def unScramble (keyedStringLiteral):
 	rotationDistance = stringNr % len (rotatedStringLiteral)
 	recodedStringLiteral = rotatedStringLiteral [:rotationDistance] + rotatedStringLiteral [rotationDistance:]
 		
-	if isPython2:
-		stringLiteral = unicode () .join ([unichr (ord (char) - charBase - (charIndex + stringNr) % charModulus) for charIndex, char in enumerate (recodedStringLiteral)])
+	if isPython2{0}:
+		stringLiteral = unicode () .join ([unichr (ord (char) - charBase{0} - (charIndex + stringNr) % charModulus{0}) for charIndex, char in enumerate (recodedStringLiteral)])
 	else:
-		stringLiteral = str () .join ([chr (ord (char) - charBase - (charIndex + stringNr) % charModulus) for charIndex, char in enumerate (recodedStringLiteral)])
-		
+		stringLiteral = str () .join ([chr (ord (char) - charBase{0} - (charIndex + stringNr) % charModulus{0}) for charIndex, char in enumerate (recodedStringLiteral)])
+
 	return eval (stringLiteral)
 
-# OPY2
-unScramble0,unScramble1,unScramble2=unScramble,unScramble,unScramble
-unScramble3,unScramble4,unScramble5=unScramble2,unScramble1,unScramble0
-unScramble6,unScramble7,unScramble8=unScramble5,unScramble4,unScramble3
-unScramble9,unScramble10,unScramble11=unScramble8,unScramble7,unScramble6
-unScramble12,unScramble13,unScramble14=unScramble11,unScramble10,unScramble9
-unScramble15,unScramble16,unScramble17=unScramble14,unScramble13,unScramble12
-unScramble18,unScramble19,unScramble20=unScramble17,unScramble16,unScramble15
-unScramble21,unScramble22,unScramble23=unScramble20,unScramble19,unScramble18
-unScramble24,unScramble25,unScramble26=unScramble23,unScramble22,unScramble21
-unScramble27,unScramble28,unScramble29=unScramble26,unScramble25,unScramble24
-unScramble30,unScramble31,unScramble32=unScramble29,unScramble28,unScramble27
+unScramble0{0},unScramble1{0},unScramble2{0}=unScramble{0},unScramble{0},unScramble{0}
+unScramble3{0},unScramble4{0},unScramble5{0}=unScramble2{0},unScramble1{0},unScramble0{0}
+unScramble6{0},unScramble7{0},unScramble8{0}=unScramble5{0},unScramble4{0},unScramble3{0}
+unScramble9{0},unScramble10{0},unScramble11{0}=unScramble8{0},unScramble7{0},unScramble6{0}
+unScramble12{0},unScramble13{0},unScramble14{0}=unScramble11{0},unScramble10{0},unScramble9{0}
+unScramble15{0},unScramble16{0},unScramble17{0}=unScramble14{0},unScramble13{0},unScramble12{0}
+unScramble18{0},unScramble19{0},unScramble20{0}=unScramble17{0},unScramble16{0},unScramble15{0}
+unScramble21{0},unScramble22{0},unScramble23{0}=unScramble20{0},unScramble19{0},unScramble18{0}
+unScramble24{0},unScramble25{0},unScramble26{0}=unScramble23{0},unScramble22{0},unScramble21{0}
+unScramble27{0},unScramble28{0},unScramble29{0}=unScramble26{0},unScramble25{0},unScramble24{0}
+unScramble30{0},unScramble31{0},unScramble32{0}=unScramble29{0},unScramble28{0},unScramble27{0}
 '''.format (plainMarker, charBase, charModulus) 
-			
+
 	def printHelpAndExit (errorLevel):
 		print (r'''
 ===============================================================================
@@ -326,9 +328,8 @@ Licence:
 	
 	# OPY2
 	# Needed by the unscrambler
-	if (obfuscateNumbers or obfuscateStrings or obfuscateBooleans) and 'version_info' not in extraPlainWordList:
-		extraPlainWordList.append('version_info')
-		
+	extraPlainWordList.append('version_info')
+
 	#TODO: Handle spaces between key/colon/value, e.g. 'key : value'     
 	replacementModulesDict = {}
 	replacementModulesPairList = getConfig ('replacement_modules.split ()', [])
@@ -408,10 +409,10 @@ Licence:
 				return stringPlaceholder    # Store original string minus plainMarker, no need to unscramble
 			else:
 				replacedStrings.append (scramble (string))
-
+				
 				# OPY2
-				return u'unScramble{0}({1})'.format (random.randrange(33),stringPlaceholder)    # Store unScramble (<scrambledString>)
-		
+				return 'unScramble{0}{1}({2})'.format(random.randrange(33),plainMarker,stringPlaceholder)    # Store unScramble (<scrambledString>)
+
 		else:
 			replacedStrings.append (string)
 			return stringPlaceholder
@@ -542,7 +543,6 @@ import {0} as currentModule
 			except:
 				pass
 
-
 	addExternalNames (__builtin__ if isPython2 else builtins) 
 	addExternalNames (externalModules)
 
@@ -570,23 +570,25 @@ import {0} as currentModule
 			#open('s:\\'+sourceFilePath.rsplit('/',1)[1]+'.txt','w').write(ast.dump(contents))
 			block = ast.dump(contents)
 			froms = re.findall("ImportFrom\(module='(.*?)', names=\[(.*?)\]",block)
-			if froms:
-				for module,attribs in froms:
+			for module,attribs in froms:
+				if module.split('.')[0] in sourceFilePreNameLIST: continue
+				allExternalModules += [module]+module.split('.')
+				allAttribs += re.findall("alias\(name='(.*?)'",attribs)
+			imports = re.findall("Import\(names=\[(.*?)\]",block)
+			for imp in imports:
+				modules = re.findall("alias\(name='(.*?)'",imp)
+				for module in modules:
 					if module.split('.')[0] in sourceFilePreNameLIST: continue
 					allExternalModules += [module]+module.split('.')
-					allAttribs += re.findall("alias\(name='(.*?)'",attribs)
-			imports = re.findall("Import\(names=\[(.*?)\]",block)
-			if imports:
-				for imp in imports:
-					modules = re.findall("name='(.*?)'",imp)
-					for module in modules:
-						if module.split('.')[0] in sourceFilePreNameLIST: continue
-						allExternalModules += [module]+module.split('.')
 			allAttribs += re.findall("attr='(.*?)'",block)
 			allFunctions += re.findall("FunctionDef\(name='(.*?)'",block)
 			allArguments += re.findall("arg='(.*?)'",block)
 			allIdentifiers += re.findall("Name\(id='(.*?)'",block)
 		allAttribs = list(set(allAttribs).difference(allFunctions))
+		#if 'urllib_parse' in allAttribs: print('allAttribs: ',set(allAttribs))
+		#if 'urllib_parse' in allArguments: print('allArguments: ',set(allArguments))
+		#if 'urllib_parse' in allIdentifiers: print('allIdentifiers: ',set(allIdentifiers))
+		#if 'urllib_parse' in allExternalModules: print('allExternalModules: ',set(allExternalModules))
 		return allAttribs,allArguments,allIdentifiers,allExternalModules
 
 	# OPY2
@@ -598,11 +600,10 @@ import {0} as currentModule
 	print('1. Filtering python source files')
 	print
 	for sourceFilePath in sourceFilePathList:
-		if sourceFilePath == configFilePath: continue
 		sourceDirectory, sourceFileName = sourceFilePath.rsplit ('/', 1)
 		if sourceFileName in skipFilesList: continue
 		sourceFilePreName, sourceFileNameExtension = (sourceFileName.rsplit ('.', 1) + ['']) [ : 2]
-		if sourceFileNameExtension in sourceFileNameExtensionList and not sourceFilePath in plainFilePathList:
+		if sourceFileNameExtension in sourceFileNameExtensionList and sourceFilePath not in plainFilePathList:
 			sourceFilePathListFiltered.append(sourceFilePath)
 			sourceFilePreNameLIST.append(sourceFilePreName)
 
@@ -642,10 +643,6 @@ import {0} as currentModule
 		sys.exit()
 
 	# OPY2
-	if not obfuscateNames_FoldersFiles: skipWordSet.update(sourceFilePreNameLIST)
-	for sourceFilePreName in sourceFilePreNameLIST: obfname = getObfuscatedName(sourceFilePreName,True)
-
-	# OPY2
 	# Read contents of section "any_external_modules" in "opy_config.txt" file
 	print('3. Collecting settings from settings file "opy_config.txt"')
 	print
@@ -669,21 +666,31 @@ import {0} as currentModule
 	print('4. Processing python source files')
 	print
 
-	for sourceFilePath in sourceFilePathListFiltered:
+	# OPY2
+	if not obfuscateNames_FoldersFiles: skipWordSet.update(sourceFilePreNameLIST)
+	for sourceFilePreName in sourceFilePreNameLIST: obfname = getObfuscatedName(sourceFilePreName,True)
+	skipWordSet.update('u')   # needed for u""
+
+	for sourceFilePath in sourceFilePathList:
+		if sourceFilePath == configFilePath:    # Don't copy the config file to the target directory
+			continue
+
 		sourceDirectory, sourceFileName = sourceFilePath.rsplit ('/', 1)
 		sourceFilePreName, sourceFileNameExtension = (sourceFileName.rsplit ('.', 1) + ['']) [ : 2]
 		targetRelSubDirectory = sourceFilePath [len (sourceRootDirectory) : ]
 		clearRelPath = targetRelSubDirectory[1:] # remove leading /
 				
+		# OPY2
+		if sourceFileName in skipFilesList: continue
+
 		# Read plain source
 
-		if sourceFileNameExtension in sourceFileNameExtensionList and not sourceFilePath in plainFilePathList:
+		if sourceFileNameExtension in sourceFileNameExtensionList and sourceFilePath not in plainFilePathList:
 			stringBase = random.randrange (64)
 		
 			sourceFile = codecs.open (sourceFilePath, encoding = 'utf-8')
 			content = sourceFile.read () 
 			sourceFile.close ()
-
 
 			if skipPublicIdentifiers:
 				skippedPublicSet.update( opy_parser.findPublicIdentifiers( content ) )
@@ -692,9 +699,9 @@ import {0} as currentModule
 			# OPY2
 			# Decide if strings and/or numbers and/or booleans should be obfuscated in this file
 			global obfuscateStringsOfThisFile
-			obfuscateStringsOfThisFile = obfuscateStrings and sourceFileName not in stringsExceptionsFileRelPathList
-			obfuscateNumbersOfThisFile = obfuscateNumbers and sourceFileName not in numbersExceptionsFileRelPathList
-			obfuscateBooleansOfThisFile = obfuscateBooleans and sourceFileName not in booleansExceptionsFileRelPathList
+			obfuscateStringsOfThisFile = (obfuscateStrings and sourceFileName not in stringsExceptionsFileRelPathList) or (not obfuscateStrings and sourceFileName in stringsExceptionsFileRelPathList)
+			obfuscateNumbersOfThisFile = (obfuscateNumbers and sourceFileName not in numbersExceptionsFileRelPathList) or (not obfuscateNumbers and sourceFileName in numbersExceptionsFileRelPathList)
+			obfuscateBooleansOfThisFile = (obfuscateBooleans and sourceFileName not in booleansExceptionsFileRelPathList) or (not obfuscateBooleans and sourceFileName in booleansExceptionsFileRelPathList)
 
 			addScrambler = obfuscateStringsOfThisFile or obfuscateNumbersOfThisFile or obfuscateBooleansOfThisFile
 
@@ -735,7 +742,6 @@ import {0} as currentModule
 			
 			# Take eventual out 'from __future__ import ... ' line and add it to contentlist
 			# Content list is prepended to normalContent later
-			
 			normalContent = fromFutureRegEx.sub (moveFromFuture, normalContent)
 
 			# Replace any imported modules per the old/new (key/value) pairs provided
@@ -752,19 +758,18 @@ import {0} as currentModule
 			# OPY2
 			# Obfuscate numbers
 			if obfuscateNumbersOfThisFile:
-				skipWordSet.update('u')
 				numbersPlaceholder = '_{0}_n_'.format(programName)
 				normalContent = re.sub(r'\b(\d+\.*\d*)\b',r'{0}(\1)'.format(numbersPlaceholder),normalContent)
 				lines = []
 				for line in normalContent.splitlines():
 					comment = re.findall('^[\t\s]*(\#.*?)$',line)
-					plainNumbers = re.findall(numbersPlaceholder+'\((\d+\.*\d*)\)'+plainMarker,line)
+					#plainNumbers = re.findall(numbersPlaceholder+'\((\d+\.*\d*)\)'+plainMarker,line)
 					lineNumbers = re.findall(numbersPlaceholder+'\((\d+\.*\d*)\)',line)
-					for number in lineNumbers:
+					for number in set(lineNumbers):
 						marker = ''
 						if 0 and number in plainNumbers: replacement,marker = number,plainMarker
-						elif comment: replacement = getObfuscatedName(str(number))
-						else: replacement = u'unScramble{0}({1})'.format(random.randrange(33),scramble(number))
+						elif comment: replacement = getObfuscatedName(number)
+						else: replacement = u'unScramble{0}{1}({2})'.format(random.randrange(33),plainMarker,scramble(number))
 						line = line.replace(numbersPlaceholder+'('+number+')'+marker,replacement)
 					lines.append(line)
 				normalContent = '\n'.join(lines)
@@ -773,19 +778,18 @@ import {0} as currentModule
 			# OPY2
 			# Obfuscate booleans True/False
 			if obfuscateBooleansOfThisFile:
-				skipWordSet.update('u')
 				booleansPlaceholder = '_{0}_b_'.format(programName)
 				normalContent = re.sub(r'\b(True|False)\b',r'{0}(\1)'.format(booleansPlaceholder),normalContent)
 				lines = []
 				for line in normalContent.splitlines():
 					comment = re.findall('^[\t\s]*(\#.*?)$',line)
-					plainBooleans = re.findall(booleansPlaceholder+'\((True|False)\)'+plainMarker,line)
+					#plainBooleans = re.findall(booleansPlaceholder+'\((True|False)\)'+plainMarker,line)
 					lineBooleans = re.findall(booleansPlaceholder+'\((True|False)\)',line)
-					for boolean in lineBooleans:
+					for boolean in set(lineBooleans):
 						marker = ''
 						if 0 and boolean in plainBooleans: replacement,marker = boolean,plainMarker
-						elif comment: replacement = getObfuscatedName(str(boolean))
-						else: replacement = u'unScramble{0}({1})'.format(random.randrange(33),scramble(boolean))
+						elif comment: replacement = getObfuscatedName(boolean)
+						else: replacement = u'unScramble{0}{1}({2})'.format(random.randrange(33),plainMarker,scramble(boolean))
 						line = line.replace(booleansPlaceholder+'('+boolean+')'+marker,replacement)
 					lines.append(line)
 				normalContent = '\n'.join(lines)
@@ -846,10 +850,8 @@ import {0} as currentModule
 					# OPY2
 					if not index: targetChunks[index] = ''
 					else:
-						try:
-							targetChunks [index] = getObfuscatedName(str(index),True)
-						except: # Not in list
-							pass
+						try: targetChunks [index] = getObfuscatedName(str(index),True)
+						except: pass   # Not in list
 
 				targetRelSubDirectory = '/'.join (targetChunks)
 				targetSubDirectory = '{0}{1}'.format (targetRootDirectory, targetRelSubDirectory) .rsplit ('/', 1) [0]
@@ -870,7 +872,7 @@ import {0} as currentModule
 			targetFile = createFilePath (obfusPath, open = True)
 			targetFile.write (content)
 			targetFile.close ()
-		elif (not dryRun) and (not sourceFileNameExtension in skipFileNameExtensionList):
+		elif not dryRun and sourceFileNameExtension not in skipFileNameExtensionList:
 			targetSubDirectory = '{0}{1}'.format (targetRootDirectory, targetRelSubDirectory) .rsplit ('/', 1) [0]
 			
 			# Create target path and copy file
@@ -881,20 +883,20 @@ import {0} as currentModule
 	if 0:
 		print
 		print ('Obfuscated files:  {0}'.format ( (obfuscatedFileDict)))
-		print;print;print;print ('Skipped words:  {0}'.format ( (skipWordSet)))
 		print;print;print;print ('Obfuscated words:  {0}'.format ( (allObfuscatedWords)))
 		print;print;print;print ('Obfuscated module imports:  {0}'.format ( (opy_parser.obfuscatedModImports)))
 		print;print;print;print ('Masked identifier imports:  {0}'.format ( (opy_parser.maskedIdentifiers)))
+		print;print;print;print ('Skipped words:  {0}'.format ( (skipWordSet)))
 		print;print;print;print ('Skipped public identifiers:  {0}'.format ( (skippedPublicSet)))
 		print;print;print;print ('Time Elapsed:  {0} sec'.format ( int(timeElapsed) ))
 		print
 	else:
 		print
 		print('{0: >28}  :  {1}'.format('Obfuscated files',len(obfuscatedFileDict)))
-		print('{0: >28}  :  {1}'.format('Skipped words',len(skipWordSet)))
 		print('{0: >28}  :  {1}'.format('Obfuscated words',len(allObfuscatedWords)))
 		print('{0: >28}  :  {1}'.format('Obfuscated module imports',len(opy_parser.obfuscatedModImports)))
 		print('{0: >28}  :  {1}'.format('Masked identifier imports',len(opy_parser.maskedIdentifiers)))
+		print('{0: >28}  :  {1}'.format('Skipped words',len(skipWordSet)))
 		print('{0: >28}  :  {1}'.format('Skipped public identifiers',len(skippedPublicSet)))
 		print('{0: >28}  :  {1} sec'.format('Time Elapsed',int(timeElapsed)))
 	print
