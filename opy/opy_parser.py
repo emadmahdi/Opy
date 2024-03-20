@@ -1,3 +1,14 @@
+#==============================================
+# OPY-DISTBUILDER (BuvinJ)
+#==============================================
+# OPY2
+# Version:  OPY2.2024.03.19
+# EMAD MAHDI
+#
+# Please feel free to report any errors or suggest new features:
+#	http://github.com/emadmahdi/opy2
+#==============================================
+
 import re
 import ast
 import six 
@@ -68,8 +79,10 @@ def __parseImports( fileContent, mode, clearTextMods=[], replacements={} ):
 		# mulit-line strings/comments should have been isolated
 		# from the fileContent before assignExternalAliases was called
 		stripped = line.strip()
-		isImportLine = stripped.startswith( IMPORT_PREFIX )
-		isFromLine = stripped.startswith( FROM_PREFIX )
+		#isImportLine = stripped.startswith( IMPORT_PREFIX )
+		#isFromLine = stripped.startswith( FROM_PREFIX )
+		isFromLine = True if ('from ' in stripped or 'from\t' in stripped) else False
+		isImportLine = True if not isFromLine and ('import ' in stripped or 'import\t' in stripped) else False
 		isEither = (isImportLine or isFromLine) 
 		return isEither, isImportLine, isFromLine
 		
@@ -100,11 +113,11 @@ def __parseImports( fileContent, mode, clearTextMods=[], replacements={} ):
 		# part of it, and remove any extra spaces in that. 
 		# Skip to the next line if there are no import items 
 		# to parse.
+		tokens = stripped.split( SPACE )  
 		if isImportLine :                           
 			try: itemsPart = SPACE.join( stripped.split( SPACE )[1:] )     
 			except: return line
 		elif isFromLine:
-			tokens = stripped.split( SPACE )                
 			try:
 				# on a from line, if the module name is not 
 				# being replaced or preserved, skip the entire line                 
@@ -126,7 +139,7 @@ def __parseImports( fileContent, mode, clearTextMods=[], replacements={} ):
 		# split & strip all the import items 
 		items = itemsPart.split( LIST_DELIM )
 		normList = [i.strip() for i in items]
-		revisedImports=[]
+		revisedImports = []
 		for item in normList :
 			# tokenize the list item 
 			tokens = item.split( SPACE )
@@ -199,17 +212,13 @@ def __parseImports( fileContent, mode, clearTextMods=[], replacements={} ):
 
 			revisedImports.append( item )
 
-		# OPY2
-		leadChar = SPACE if line.startswith(SPACE) else TAB
-		leadSpaces = leadChar * (len(line) - len(line.lstrip(leadChar)))
-
 		# re-build the line                                                        
-		itemsPart = LIST_DELIM.join( revisedImports )    
-		line = ( (IMPORT_TEMPLATE % (leadSpaces, itemsPart))
-				 if isImportLine else
-				 (FROM_TEMPLATE % 
-				   (leadSpaces, modName, itemsPart)) )
-		return line
+		itemsPart = LIST_DELIM.join( revisedImports )
+
+		# OPY2
+		line = re.sub(r'^(.*?[\t\s]*import[\t\s]+)(.*?)$',r'\1',line)
+		itemsPart = re.sub(r'^(.*?[\t\s]*import[\t\s]+)(.*?)$',r'\2',itemsPart)
+		return line+itemsPart
 
 	def applyAliases( lines ): 
 		#TODO: trim this down. It functions, it's ugly...
@@ -217,31 +226,33 @@ def __parseImports( fileContent, mode, clearTextMods=[], replacements={} ):
 		dotAliasesRegEx={}        
 		for name in maskedIdentifiers :
 			nakedAliasesRegEx[name] = ( 
-				re.compile( IDENTIFIER_REGEX.format( name ) ) ) 
+				re.compile( r'\b{0}\b'.format( name.replace('.','\.') ) ) )		# OPY2
 		for name in maskedIdentifiers :
 			dotAliasesRegEx[name] = ( 
-				re.compile( IDENTIFIER_DOT_REGEX.format( name ) ) ) 
+				re.compile( r'\b{0}\.\b'.format( name.replace('.','\.') ) ) )		# OPY2
 		revLines = []   
 		for line in lines:
 			if not isImportLn( line )[0]:
-			
-				# OPY 2
-				if 'from' not in line and 'import' not in line:
-			
-					for name, regEx in six.iteritems( dotAliasesRegEx ):
-						modAlias = __modAliases.get(name)
-						mbrAlias = __mbrAliases.get(name)                    
-						if mbrAlias: line = regEx.sub( mbrAlias + MEMBER_DELIM, line )
-						elif modAlias: line = regEx.sub( modAlias + MEMBER_DELIM, line )                    
-					for name, regEx in six.iteritems( nakedAliasesRegEx ):
-						
-						# OPY2
-						if '.'+name in line: continue
+				for name, regEx in six.iteritems( dotAliasesRegEx ):
+					
+					# OPY2
+					if name+'.' not in line: continue
+					
+					modAlias = __modAliases.get(name)
+					mbrAlias = __mbrAliases.get(name)
+					if mbrAlias: line = regEx.sub( mbrAlias + MEMBER_DELIM, line )
+					elif modAlias: line = regEx.sub( modAlias + MEMBER_DELIM, line )
 
-						modAlias = __modAliases.get(name)
-						mbrAlias = __mbrAliases.get(name)                    
-						if mbrAlias: line = regEx.sub( mbrAlias, line )
-						elif modAlias: line = regEx.sub( modAlias, line )                    
+				for name, regEx in six.iteritems( nakedAliasesRegEx ):
+
+					# OPY2
+					if '.'+name in line: continue
+
+					modAlias = __modAliases.get(name)
+					mbrAlias = __mbrAliases.get(name)
+					if mbrAlias: line = regEx.sub( mbrAlias, line )
+					elif modAlias: line = regEx.sub( modAlias, line )
+
 			revLines.append( line )
 		return revLines
 
@@ -327,4 +338,3 @@ def __findAstPublicNameAssigns( node ):
 def __isPrivatePrefix( identifier ):
 	return ( identifier.startswith( PRIVATE_PREFIX )
 			 and not identifier.endswith( MAGIC_SUFFIX ) )
-
