@@ -5,6 +5,7 @@ v 2024.03.19
 
 ( EMAD MAHDI )
 
+Obfuscator for Python
 
 Added new features and advanced settings such as:
 
